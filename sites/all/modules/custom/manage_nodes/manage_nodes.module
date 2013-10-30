@@ -1,0 +1,111 @@
+<?php
+
+// $Id: manage_info.module $
+/**
+ * Implementation of hook_perm
+ * @file manage_info.module
+ */
+function manage_nodes_perm() {
+    return array('access manage nodes');
+}
+
+/**
+ * Implementation of hook_menu()
+ */
+function manage_nodes_menu() {
+
+    $items['manage/nodes'] = array(
+        'title' => 'Manage Content Types',
+        'page callback' => 'manage_nodes_callback',
+        'access arguments' => array('access manage nodes'),
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['manage/nodes/del'] = array(
+        'page callback' => 'manage_nodes_del_callback',
+        'access arguments' => array('access manage nodes'),
+        'type' => MENU_CALLBACK,
+    );
+
+    return $items;
+}
+
+function manage_nodes_callback() {
+    global $base_ur;
+    $type = arg(2);
+    if (empty($type)) {
+        drupal_goto('control_panel');
+    }
+    drupal_set_title('Manage ' . ucwords(str_replace('_', ' ', $type)));
+
+    $breadcrumb = array();
+    $breadcrumb[] = l('Home', '<front>');
+    $breadcrumb[] = l('Control Panel', 'control_panel');
+    $breadcrumb[] = l('Manage Pages', 'manage_pages');
+    $breadcrumb[] = l(drupal_get_title(), 'manage/nodes/' . $type); // Link to current URL
+    drupal_set_breadcrumb($breadcrumb);
+
+    $path = drupal_get_path('module', 'manage_nodes');
+    drupal_add_js($path . '/manage_nodes.js');
+
+    $sql = "SELECT n.nid, n.title, u.name FROM {node} n 
+			INNER JOIN {users} u ON u.uid = n.uid 
+			WHERE n.type = '$type'
+			ORDER BY n.nid DESC";
+
+    $output = "";
+
+    $query = "SELECT n.nid, n.title, u.name, n.changed FROM {node} n 
+			INNER JOIN {users} u ON u.uid = n.uid 
+			WHERE n.type = '$type'
+			ORDER BY n.nid DESC";
+    $count_query = "SELECT COUNT(n.nid) FROM {node} n 
+			INNER JOIN {users} u ON u.uid = n.uid 
+			WHERE n.type = '$type'
+			ORDER BY n.nid DESC";
+
+    $rows_per_page = 25;
+    $rows = array();
+    $header = array(
+        array('data' => '<input type="checkbox" class="parent_checkbox"/>', 'width' => '30'),
+        array('data' => t('Title'), 'field' => 'title', 'width' => '200'),
+        array('data' => t('Author'), 'field' => 'name'),
+        array('data' => t('Updated'), 'field' => 'changed'),
+        array('data' => t('Action'), 'width' => '100'),
+    );
+    $result = pager_query(db_rewrite_sql($query) . tablesort_sql($header), $rows_per_page, 0, $count_query);
+    while ($data = db_fetch_object($result)) {
+
+        $last_update = date('d-m-Y', $data->changed);
+
+        $rows[] = array(
+            '<input type="checkbox" value="' . $data->nid . '" class="hiddenId" />',
+            l($data->title, 'node/'.$data->nid),
+            $data->name,
+            $last_update,
+            l('Edit', 'node/'. $data->nid .'/edit', array('query' => 'destination=manage/nodes/' . $type)),
+        );
+    }
+
+    if (!$rows) {
+        $no_result = 'You do not have any content in this area yet. To add contents, please ' . l('click here', 'node/add/' . $type, array('query' => 'destination=manage/nodes/' . $type));
+        $rows[] = array(array('data' => $no_result, 'colspan' => '5'));
+    } else {
+        $rows[] = array(array('data' => '<input type="button" value="Delete" id="delete-btn" />', 'colspan' => '5'));
+    }
+    $output = '
+        <input type="hidden" value="' . $base_url . '" id="base_url" />
+        <input type="hidden" value="' . $type . '" id="node_type" />';
+
+    $output .= theme('table', $header, $rows);
+    $output .= theme('pager', NULL, $rows_per_page, 0);
+
+    return $output;
+}
+
+function manage_nodes_del_callback() {
+    $nids = $_POST['nid'];
+    foreach ($nids as $key => $nid) {
+        node_delete($nid);
+    }
+}

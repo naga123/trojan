@@ -1,0 +1,121 @@
+#topnav ul.menu ul{display:none}
+#topnav ul.menu ul{display:none}
+/*#topnav ul.menu li:hover>ul{display:block}*/
+#topnav ul.menu ul{position: absolute;left:0;top:100%;}
+#topnav ul.menu ul ul{position: absolute;left:97%;top:-1px;}
+#topnav ul.menu{
+    font-weight:bold;
+    margin:0px 28px;
+    padding:0px;
+    list-style:none;
+    font-family: 'Cabin Condensed', sans-serif;
+    width:120px;
+}
+#topnav ul.menu li{
+    font-family: 'Cabin Condensed', sans-serif;
+    margin:0px;
+    list-style:none;
+}
+#topnav ul.menu li a{
+    color:#FFF;
+    line-height:33px;
+    font-size:19px;
+    text-decoration:none;
+    text-align:center;
+    letter-spacing:1px;
+    display:inline;
+}
+#topnav ul.menu li a:hover{
+    color:#f3ec19;
+}
+#topnav ul.menu li a.current{
+    position:relative;
+    color:#f3ec19;
+}
+#topnav ul.menu li a.current span{
+    position:relative;
+    color:#f3ec19;
+}
+#topnav ul.menu li ul{
+    left:-13px;
+    margin: -2px 0px 0px 0px;
+    list-style:none;
+    padding:0px;
+    width:950px;
+    z-index:101;
+}
+#topnav ul.menu li ul li{
+    margin:0px;
+    list-style:none;
+    padding:0px;
+    float:left;
+}
+#topnav ul.menu li ul li a{
+    background:url(images/trojan/navshade.png) no-repeat right bottom;
+    text-decoration:none;
+    color:#FFF;
+    line-height:14px;
+    font-size:14px;
+    padding:8px 44px 8px 5px;
+    text-align:left;
+    display:block;
+}
+#topnav ul.menu li ul li a:hover{
+    color:#f3ec19;
+}
+#topnav ul.menu table {border-collapse:collapse}
+#topnav ul.menu {
+    display:block;
+    zoom:0;
+    float: left;
+}
+#topnav ul.menu ul a {
+    text-align:left;
+    white-space:nowrap;
+}
+#topnav ul.menu li:hover{
+    position:relative;
+}
+#topnav ul.menu li{
+    position:relative;
+}
+/*#topnav ul.menu a:hover ul,ul.menu a:hover a:hover ul,ul.menu a:hover a:hover a:hover ul{display:block}
+#topnav ul.menu a:hover ul ul,ul.menu a:hover a:hover ul ul{display:none}*/
+.navbg {
+    background:url(images/trojan/dropbg.png) repeat;
+    height: 29px;
+    left: 0;
+    position: absolute;
+    margin-top: 33px;
+    width: 100%;
+    z-index: 100;}
+
+.navbg2 {
+    background: url(images/trojan/bg.png) repeat;
+    height: 67px;
+    left: 0;
+    position: absolute;
+    margin-top: -68px;
+    width: 100%;
+    z-index: 100;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;}
+
+#myslides {
+    height: 249px;
+    padding: 0;  
+    width: 100% !important;
+    margin-top: -1px;
+} 
+
+#myslides img {  
+    background-color: rgb(230,230,230);
+    height: 249px;
+}
+#services-links ul{
+	left: -78px !important;
+	width: 1100px !important;
+}
+#services-links ul li a{
+	padding: 8px 46px 8px 0 !important;
+}

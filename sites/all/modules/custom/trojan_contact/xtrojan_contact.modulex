@@ -1,0 +1,465 @@
+<?php
+
+// $Id: branch
+/*
+ * @file: File containing many helping functions for branche pages.
+ */
+
+/*
+ * Implementation of hook_init().
+ */
+function trojan_contact_init() {
+  module_load_include('inc', 'trojan_contact', 'forms/contact.home');
+  module_load_include('inc', 'trojan_contact', 'forms/contact.employee.login');
+  module_load_include('inc', 'trojan_contact', 'forms/contact.sales.services');
+  module_load_include('inc', 'trojan_contact', 'forms/contact.training');
+  module_load_include('inc', 'trojan_contact', 'forms/contact.branch');
+  //module_load_include('inc', 'trojan_contact', 'forms/contact.popup');
+}
+
+/*
+ * Implementation of hook_menu().
+ */
+function trojan_contact_menu() {
+  $items = array();
+
+  $items['tc/test'] = array(
+    'title' => 'Trojan Test Page', 
+    'page callback' => 'trojan_contact_test', 
+    'access arguments' => array('access content'), 
+    'type' => MENU_CALLBACK,
+  );
+  
+  $items['health_safety'] = array(
+    'title' => 'Trojan Test Page', 
+    'page callback' => 'health_safety', 
+    'access arguments' => array('access content'), 
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+
+function health_safety(){
+    global $base_url;
+    return '<img src="'.$base_url.'/sites/default/files/trojan/healthcertificate.jpg" />';
+}
+
+
+/*
+ * Callback page.
+ */
+function trojan_contact_test() {
+  return drupal_get_form('trojan_contact_popup_form');
+}
+
+/*
+ * Implementation of hook_theme().
+ */
+function trojan_contact_theme() {
+  $path = drupal_get_path('module', 'trojan_contact');
+  return array(
+    'trojan_contact_home_form' => array(
+      'template' => 'theme/home-contact-form',
+      'arguments' => array('form' => null, 'vars' => NULL),
+	  'path' => $path,
+    ),
+	'trojan_contact_employee_login_form' => array(
+      'template' => 'theme/employee-login-contact-form',
+      'arguments' => array('form' => null, 'vars' => NULL),
+	  'path' => $path,
+    ),
+	'trojan_contact_sales_services_form' => array(
+      'template' => 'theme/sales-services-contact-form',
+      'arguments' => array('form' => null, 'vars' => NULL),
+	  'path' => $path,
+    ),
+	'trojan_contact_training_form' => array(
+      'template' => 'theme/training-contact-form',
+      'arguments' => array('form' => null, 'vars' => NULL),
+	  'path' => $path,
+    ),
+	'trojan_contact_popup_form' => array(
+      'template' => 'theme/popup-contact-form',
+      'arguments' => array('form' => null, 'vars' => NULL),
+	  'path' => $path,
+    ),
+	'trojan_contact_branch_form' => array(
+      'template' => 'theme/branch-contact-form',
+      'arguments' => array('form' => null, 'vars' => NULL),
+	  'path' => $path,
+    ),
+	'mail_contact_home' => array(
+      'template' => 'theme/emails/mail-contact-home',
+      'arguments' => array('vars' => NULL),
+	  'path' => $path,
+    ),
+	'mail_contact_employee_login' => array(
+      'template' => 'theme/emails/mail-contact-employee-login',
+      'arguments' => array('vars' => NULL),
+	  'path' => $path,
+    ),
+	'mail_contact_sales_services' => array(
+      'template' => 'theme/emails/mail-contact-sales-services',
+      'arguments' => array('vars' => NULL),
+	  'path' => $path,
+    ),
+	'mail_contact_training' => array(
+      'template' => 'theme/emails/mail-contact-training',
+      'arguments' => array('vars' => NULL),
+	  'path' => $path,
+    ),
+	'mail_contact_popup' => array(
+      'template' => 'theme/emails/mail-contact-popup',
+      'arguments' => array('vars' => NULL),
+	  'path' => $path,
+    ),
+	'mail_contact_branch' => array(
+      'template' => 'theme/emails/mail-contact-branch',
+      'arguments' => array('vars' => NULL),
+	  'path' => $path,
+    ),
+  );
+}
+
+function trojan_contact_mail($key, &$message, $params) {
+  $language = $message['language'];
+  $variables = user_mail_tokens($params['account'], $language);
+  
+  $headers = array(
+    'MIME-Version' => '1.0',
+    'Content-Type' => 'text/html; charset=UTF-8; format=flowed',
+    'Content-Transfer-Encoding' => '8Bit',
+    'X-Mailer' => 'Drupal'
+  );
+
+  foreach ($headers as $key => $value) {
+    $message['headers'][$key] = $value;
+  }
+
+  switch($key) {
+    case 'contact_home':
+      $message['subject'] = t($params['subject'], $variables, $language->language);
+      $message['body'][] = theme('mail_contact_home', $params);
+      break;
+
+	case 'contact_employee_login':
+      $message['subject'] = t($params['subject'], $variables, $language->language);
+      $message['body'][] = theme('mail_contact_employee_login', $params);
+      break;
+
+	case 'contact_sales_services':
+      $message['subject'] = t($params['subject'], $variables, $language->language);
+      $message['body'][] = theme('mail_contact_sales_services', $params);
+      break;
+
+	case 'contact_training':
+      $message['subject'] = t($params['subject'], $variables, $language->language);
+      $message['body'][] = theme('mail_contact_training', $params);
+      break;
+
+	case 'contact_popup':
+      $message['subject'] = t($params['subject'], $variables, $language->language);
+      $message['body'][] = theme('mail_contact_popup', $params);
+      break;
+
+	case 'contact_branch':
+      $message['subject'] = t($params['subject'], $variables, $language->language);
+      $message['body'][] = theme('mail_contact_branch', $params);
+      break;
+  }
+}
+
+/*
+ * Implementation of hook_form().
+ */
+function trojan_contact_popup_form() {
+
+  $form = array();
+
+  $form['date_of_application'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Date of Application'), 
+    '#size' => 25, 
+  );
+
+  $form['postion_applying_for'] = array(
+    '#type' => 'checkboxes', 
+    '#title' => t('Postion applying for'), 
+	'#options' => array(
+	  'H2S Safety ',
+	  'First Aid',
+	  'FireFighter',
+	  'Other',
+	)
+  );
+  
+  $form['postion_applying_for_other'] = array(
+    '#type' => 'textfield', 
+	'#size' => 15, 
+  );
+
+  $form['name'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Name'), 
+  );
+
+  $form['date_of_birth'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Date of Birth'), 
+  );
+
+  $form['Address1'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Address'), 
+  );
+
+  $form['Address2'] = array(
+    '#type' => 'textfield', 
+    '#title' => t(''), 
+  );
+
+  $form['Address3'] = array(
+    '#type' => 'textfield', 
+    '#title' => t(''), 
+  );
+
+  $form['Phone'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Phone'), 
+  );
+
+  $form['Mobile'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Mobile'), 
+  );
+
+  $form['Email'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Email'), 
+  );
+
+  $form['Previous Employer1'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Previous Employer'), 
+  );
+
+  $form['Date Started1'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Date Started'), 
+  );
+
+  $form['Position1'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Position'), 
+  );
+
+  $form['Date Ended1'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Date Ended'), 
+  );
+
+  $form['Phone number1'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Phone number'), 
+  );
+
+  $form['Reason for Leaving1'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Reason for Leaving'), 
+  );
+
+  $form['Previous Employer2'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Previous Employer'), 
+  );
+
+  $form['Date Started2'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Date Started'), 
+  );
+
+  $form['Position2'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Position'), 
+  );
+
+  $form['Date Ended2'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Date Ended'), 
+  );
+
+  $form['Phone number2'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Phone number'), 
+  );
+
+  $form['Reason for Leaving2'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Reason for Leaving'), 
+  );
+
+  $form['Previous Employer3'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Previous Employer'), 
+  );
+
+  $form['Date Started3'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Date Started'), 
+  );
+
+  $form['Position3'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Position'), 
+  );
+
+  $form['Date Ended3'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Date Ended'), 
+  );
+
+  $form['Phone number3'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Phone number'), 
+  );
+
+  $form['Reason for Leaving3'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Reason for Leaving'), 
+  );
+
+  $form['Secondary Institution'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Secondary Institution'), 
+  );
+
+  $form['Graduated?'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Graduated?'), 
+  );
+
+  $form['Post-Secondary Institution'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Post-Secondary Institution'), 
+    '#size' => 90,
+  );
+
+  $form['Program'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Program'), 
+  );
+
+  $form['Years Completed?'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Years Completed?'), 
+  );
+
+  $form['How much experience do you have in the oil and gas industry?'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('How much experience do you have in the oil and gas industry?'), 
+  );
+
+  $form['How much experience do you have in this position?'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('How much experience do you have in this position?'), 
+	'#size' => 70,
+  );
+
+  $form['What are you looking to obtain through this position?'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('What are you looking to obtain through this position?'), 
+	'#size' => 70,
+  );
+
+  $form['What are you looking to obtain through this position?1'] = array(
+    '#type' => 'textfield', 
+	'#size' => 121,
+  );
+
+  $form['Do you consider this position a "stepping stone"? '] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Do you consider this position a "stepping stone"? '), 
+    '#size' => 75,
+  );
+
+  $form['If yes, to what?'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('If yes, to what?'), 
+    '#size' => 85,
+  );
+
+  $form['Would you consider this position a job or a career?'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Would you consider this position a job or a career?'), 
+    '#size' => 70,
+  );
+
+  $form['What are your expected starting wages for this position?'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('What are your expected starting wages for this position?'), 
+    '#size' => 65,
+  );
+
+  $form['What are your short term goals (up to 1 year)?'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('What are your short term goals (up to 1 year)?'), 
+    '#size' => 75,
+  );
+
+  $form['What are your short term goals (up to 1 year)?1'] = array(
+    '#type' => 'textfield', 
+    '#title' => t(''), 
+    '#size' => 121,
+  );
+
+  $form['What are your long term goals (1-5 years)?'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('What are your long term goals (1-5 years)?'), 
+    '#size' => 80,
+  );
+
+  $form['What are your long term goals (1-5 years)?1'] = array(
+    '#type' => 'textfield', 
+    '#title' => t(''), 
+    '#size' => 121,
+  );
+
+  $form['resume'] = array(
+    '#type' => 'file', 
+    '#title' => t('Upload your resume'), 
+    '#size' => 40,
+  );
+
+  $form['drivers'] = array(
+    '#type' => 'file', 
+    '#title' => t('Upload your drivers abstract'), 
+    '#size' => 40,
+  );
+
+  $form['submit'] = array('#type' => 'submit', '#value' => t('Submit'));
+
+  $form['#theme'] = 'trojan_contact_popup_form';
+
+  return $form;
+
+}
+
+
+
+/*
+ * Implementation of hook_form_submit().
+ */
+function trojan_contact_popup_form_submit($form, $form_state) {
+  global $user;
+  $values = $form_state['values'];
+  //$site_mail = variable_get('site_mail', '');
+  $response = drupal_mail('trojan_contact', 'contact_popup', 'azhar367@gmail.com', user_preferred_language($user), $values);
+  echo '<pre>';
+  print_r($response);
+  echo '<br />test';
+  exit;
+  //
+  //drupal_set_message('Message has been sent');
+}

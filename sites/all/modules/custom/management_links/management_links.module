@@ -1,0 +1,71 @@
+<?php
+
+// $Id: management_links
+/*
+ * @file: File containing many helping functions for management_links pages.
+ */
+
+/**
+ * Implementation of hook_perm
+ * @file manage_info.module
+ */
+function management_links_perm() {
+    return array('access pages');
+}
+
+/**
+ * Implementation of hook_menu()
+ */
+function management_links_menu() {
+
+    $items['management_links'] = array(
+        'title' => 'Management',
+        'page callback' => 'management_links',
+        'access arguments' => array('access pages'),
+        'type' => MENU_LOCAL_TASK,
+    );
+
+    return $items;
+}
+
+/*
+ * Implementation of management_links
+ */
+
+function management_links() {
+
+    $section = arg(1);
+    $data = array();
+
+    switch ($section) {
+        case 'branch':
+            $data[] = array(
+                'link' => 'node/add/branch',
+                'title' => 'Add Branch',
+            );
+            $data[] = array(
+                'link' => 'manage/nodes/branch',
+                'title' => 'Manage Branches',
+            );
+            break;
+
+        default:
+            drupal_goto('control_panel');
+    }
+
+
+    return theme('management_links', $data);
+}
+
+/*
+ * Implementation of hook_theme
+ */
+
+function management_links_theme() {
+    return array(
+        'management_links' => array(
+            'arguments' => array('data' => NULL),
+            'template' => 'management_links',
+        )
+    );
+}

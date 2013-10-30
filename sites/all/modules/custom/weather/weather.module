@@ -1,0 +1,51 @@
+<?php
+
+function weather_get() {
+
+    $ip = VisitorIP();
+    $time_now = time();
+    $time_previous = time() - 3600;
+    db_query("DELETE FROM weather WHERE time < '$time_previous'");
+    $sql = "SELECT data FROM weather WHERE ip = '$ip' and time > '$time_previous'";
+    $data = db_result(db_query($sql));
+    if (empty($data)) {
+        $ch = curl_init();
+        $timeout = 5;
+        curl_setopt($ch,CURLOPT_URL,"http://free.worldweatheronline.com/feed/weather.ashx?q=" . $ip . "&format=json&num_of_days=2&key=cf97e4bbfd204021121903");
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
+        $json = curl_exec($ch);
+		curl_close($ch);
+
+		//$json = file_get_contents("http://free.worldweatheronline.com/feed/weather.ashx?q=" . $ip . "&format=json&num_of_days=2&key=cf97e4bbfd204021121903");
+        $output = json_decode($json);
+        $data = $output->data->current_condition[0];
+        //print_r($data); exit;
+        $serialized = serialize($data);
+        db_query("INSERT into weather (`ip`, `time`, `data`) VALUES ('$ip', '$time_now', '%s')", $serialized);
+    } else {
+        $data = unserialize($data);
+    }
+    $temp = $data->temp_C;
+    $icon = $data->weatherIconUrl[0]->value;
+
+    $output = '
+        <h2 class="weather-h2">LOCAL WEATHER</h2>
+        <div class="weather-image">
+		  <img src="'.$icon.'" width="48" height="48" />
+		  <div class="weather-temperature">'.$temp.'</div>
+		</div>
+        <div class="weather-date">'. date('F, d Y').'</div>
+    ';
+    return $output;
+}
+
+function VisitorIP() {
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+        $TheIp = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    else
+        $TheIp = $_SERVER['REMOTE_ADDR'];
+
+    return trim($TheIp);
+}
+

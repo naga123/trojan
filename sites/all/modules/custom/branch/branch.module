@@ -1,0 +1,38 @@
+<?php
+
+// $Id: branch
+/*
+ * @file: File containing many helping functions for branche pages.
+ */
+
+//
+//function branch_preprocess_node(&$vars) {
+//    if ($vars['type'] == 'branch') {
+//
+//        $path = drupal_get_path('module', 'branch');
+//        drupal_add_css($path . '/branch.css');
+//        //drupal_add_js($path.'/branch.js');
+//        // drupal_add_css($path.'/branch.css');
+//    }
+//}
+
+function branch_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+    switch ($op) {
+        case 'view':
+            if($node->nid == 13){
+                global $user;
+                if($user->uid < 1){
+                    drupal_set_message("Please login to view this page.");
+                    drupal_goto('user/login');
+                }
+            }
+            if ($node->type == 'branch') {
+                
+                $path = drupal_get_path('module', 'branch');
+                drupal_add_css($path . '/slider.css');
+                drupal_add_js($path.'/slider.js');
+                drupal_add_js($path.'/map.js');
+            }
+            break;
+    }
+}

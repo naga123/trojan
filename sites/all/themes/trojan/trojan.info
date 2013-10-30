@@ -1,0 +1,28 @@
+name = Trojan
+description = Tableless, recolorable, multi-column, fluid width theme (default).
+version = VERSION
+core = 6.x
+engine = phptemplate
+
+regions[header_closest] = "header closest"
+regions[headerbanner] = "Header Banner"
+regions[nearest_location] = "Nearest Location Block"
+regions[trojan_branches] = "Trojan Branches"
+regions[footerimage] = "Footer Image"
+
+;stylesheets[all][] = style.css
+stylesheets[all][] = dd.css
+stylesheets[all][] = trojan.css
+stylesheets[all][] = font/font.css
+stylesheets[print][] = print.css
+
+scripts[] = js/jquery.hoverIntent.minified.js
+scripts[] = js/jquery.cycle.all.js
+scripts[] = js/jquery.bxSlider.min.js
+scripts[] = js/site.js
+
+; Information added by drupal.org packaging script on 2011-05-25
+version = "6.22"
+project = "drupal"
+datestamp = "1306357015"
+

@@ -1,0 +1,9 @@
+;$Id$
+name = Manage Nodes
+description = "The module is containing the management of Nodes."
+package = cWyze Custom Modules
+php = 5.1
+version = "6.x-1.1"
+core = "6.x"
+package = Trojan
+datestamp = "1287644984"

@@ -1,0 +1,7 @@
+;$Id$
+name = Services
+description = "The module is being used as a helping module for Services"
+package = Trojan
+core = 6.x
+php = 5.1
+version = "1.1"

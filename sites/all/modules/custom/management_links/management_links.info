@@ -1,0 +1,7 @@
+;$Id$
+name = Management Links 
+description = "The module is being used for all management links"
+package = Trojan
+core = 6.x
+php = 5.1
+version = "1.1"

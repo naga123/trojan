@@ -1,0 +1,44 @@
+<?php
+
+// $Id: edit_site
+/*
+ * @file: It will disable some site functionality
+
+ */
+// TODO: 
+
+
+function edit_site_form_alter(&$form, &$form_state, $form_id) {
+
+    $form['body_field']['format']['#attributes'] = array('class' => 'hidethis');
+    $form['menu']['#attributes'] = array('class' => 'hidethis');
+    $form['comment_settings']['#attributes'] = array('class' => 'hidethis');
+    $form['options']['#attributes'] = array('class' => 'hidethis');
+    $form['revision_information']['#attributes'] = array('class' => 'hidethis');
+    $form['edit_preview']['#attributes'] = array('class' => 'hidethis');
+    $form['attachments']['#attributes'] = array('class' => 'hidethis');
+}
+
+function edit_site_nodeapi(&$node, $op, $a3=NULL, $a4=NULL) {
+
+    switch ($op) {
+        case 'update':
+            drupal_goto('control_panel');
+            break;
+
+        case 'insert':
+            drupal_goto('control_panel');
+            break;
+    }
+}
+
+function edit_site_user($op, &$edit, &$account, $category = NULL) {
+  if ($op == 'login') {
+    global $user;
+    if($user->uid == 1){
+        drupal_goto('control_panel');
+    } else {
+        drupal_goto('node/13');
+    }
+  }
+}

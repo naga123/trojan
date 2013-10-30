@@ -1,0 +1,7 @@
+;$Id$
+name = Edit Site 
+description = "The module will do some alteration"
+package = Trojan
+core = 6.x
+php = 5.1
+version = "1.1"

@@ -1,0 +1,7 @@
+; $Id$
+name = Popups: Test Page
+description = Test the Popups API.
+package = User interface
+core = 6.x
+dependencies[] = popups
+

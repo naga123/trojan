@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTP_HOST} ^trojansafety.com$ [NC]
+RewriteRule ^(.*)$ http://www.trojansafety.com/$1 [L,R=301]

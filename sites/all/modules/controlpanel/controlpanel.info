@@ -1,0 +1,10 @@
+; $Id: controlpanel.info
+name = Control Panel
+description = "Build graphical Control Panels."
+
+; Information added by drupal.org packaging script on 2010-01-16
+version = "6.x-1.3"
+core = "6.x"
+project = "controlpanel"
+datestamp = "1263618905"
+
